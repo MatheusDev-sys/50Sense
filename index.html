@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>50 Sense - Monitoramento</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js CDN for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Applying Inter font as default */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for a glowing effect and animations */
+        .glow-dot {
+            box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white antialiased">
+
+    <div id="app-container" class="min-h-screen flex flex-col items-center justify-center p-4">
+
+        <!-- ======================= -->
+        <!--      Login Screen       -->
+        <!-- ======================= -->
+        <div id="login-screen" class="w-full max-w-md fade-in">
+            <div class="text-center mb-8">
+                <svg class="w-20 h-20 mx-auto mb-4 text-cyan-400" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 90C72.0914 90 90 72.0914 90 50C90 27.9086 72.0914 10 50 10C27.9086 10 10 27.9086 10 50C10 72.0914 27.9086 90 50 90Z" stroke="currentColor" stroke-width="4"></path>
+                    <text x="50" y="59" font-family="Inter, sans-serif" font-weight="900" font-size="32" text-anchor="middle" fill="currentColor">50</text>
+                    <path d="M25 68C35 60 40 70 50 65C60 60 65 70 75 62" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <h1 class="text-5xl font-black text-cyan-400">50 Sense</h1>
+                <p class="text-gray-400 mt-2">Monitoramento inteligente de temperatura</p>
+            </div>
+
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl">
+                <form id="login-form">
+                    <div class="mb-4">
+                        <label for="login-username" class="block text-sm font-medium text-gray-300 mb-2">Login</label>
+                        <input type="text" id="login-username" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition" placeholder="Seu login de acesso">
+                    </div>
+                    <div class="mb-6">
+                        <label for="login-password" class="block text-sm font-medium text-gray-300 mb-2">Senha</label>
+                        <input type="password" id="login-password" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition" placeholder="••••••••">
+                    </div>
+                    <div id="login-error" class="text-red-400 text-sm mb-4 text-center hidden"></div>
+                    <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 shadow-lg shadow-cyan-500/20">
+                        Entrar
+                    </button>
+                </form>
+
+                <div class="text-center mt-6">
+                    <p class="text-gray-400 text-sm">Não tem uma conta? 
+                        <a href="#" id="go-to-register" class="font-medium text-cyan-400 hover:underline">Registre-se</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================= -->
+        <!--   Registration Screen   -->
+        <!-- ======================= -->
+        <div id="register-screen" class="w-full max-w-md hidden fade-in">
+            <div class="text-center mb-8">
+                 <svg class="w-20 h-20 mx-auto mb-4 text-cyan-400" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 90C72.0914 90 90 72.0914 90 50C90 27.9086 72.0914 10 50 10C27.9086 10 10 27.9086 10 50C10 72.0914 27.9086 90 50 90Z" stroke="currentColor" stroke-width="4"></path>
+                    <text x="50" y="59" font-family="Inter, sans-serif" font-weight="900" font-size="32" text-anchor="middle" fill="currentColor">50</text>
+                    <path d="M25 68C35 60 40 70 50 65C60 60 65 70 75 62" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+                </svg>
+                <h1 class="text-5xl font-black text-cyan-400">50 Sense</h1>
+                <p class="text-gray-400 mt-2">Crie sua conta</p>
+            </div>
+
+            <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl">
+                <form id="register-form">
+                    <div class="mb-4">
+                        <label for="reg-password" class="block text-sm font-medium text-gray-300 mb-2">Senha</label>
+                        <input type="password" id="reg-password" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition">
+                    </div>
+                    
+                    <!-- Password criteria validation -->
+                    <div id="password-criteria" class="text-xs text-gray-400 space-y-1 mb-4">
+                        <div id="length-check" class="flex items-center">
+                           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                           <span>Pelo menos 8 caracteres</span>
+                        </div>
+                        <div id="special-char-check" class="flex items-center">
+                           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                           <span>Um caractere especial (!@#$%)</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="confirm-password" class="block text-sm font-medium text-gray-300 mb-2">Confirmar Senha</label>
+                        <input type="password" id="confirm-password" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition">
+                    </div>
+                    
+                    <div id="password-match-msg" class="text-sm text-center mb-4 h-5"></div>
+
+                    <button type="submit" id="register-button" class="w-full bg-cyan-500 text-white font-bold py-3 px-4 rounded-lg transition duration-300 shadow-lg shadow-cyan-500/20 opacity-50 cursor-not-allowed" disabled>
+                        Registrar
+                    </button>
+                </form>
+
+                <div class="text-center mt-6">
+                    <p class="text-gray-400 text-sm">Já tem uma conta? 
+                        <a href="#" id="go-to-login" class="font-medium text-cyan-400 hover:underline">Faça o login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================= -->
+        <!--    Dashboard Screen     -->
+        <!-- ======================= -->
+        <div id="dashboard-screen" class="w-full max-w-6xl hidden fade-in">
+            <!-- Header -->
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-black text-cyan-400">50 Sense</h1>
+                    <p id="welcome-message" class="text-gray-400">Bem-vindo(a), Administrador!</p>
+                </div>
+                <button id="logout-button" class="bg-gray-700 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    Sair
+                </button>
+            </header>
+
+            <!-- Main Content Grid -->
+            <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Current Temperature Card -->
+                <div class="lg:col-span-1 bg-gray-800 p-6 rounded-2xl shadow-2xl flex flex-col justify-center items-center">
+                    <h2 class="text-xl font-bold text-gray-300 mb-2">Temperatura Atual</h2>
+                    <p id="current-temp" class="text-7xl font-black text-white">23.5<span class="text-5xl text-cyan-400">&deg;C</span></p>
+                    <div class="flex items-center mt-4">
+                        <span id="temp-status-dot" class="w-4 h-4 rounded-full bg-green-500 glow-dot mr-3"></span>
+                        <p id="temp-status-text" class="text-lg font-medium text-green-400">Normal</p>
+                    </div>
+                    <p id="last-update" class="text-xs text-gray-500 mt-4">Última atualização: agora</p>
+                </div>
+
+                <!-- Temperature History Chart -->
+                <div class="lg:col-span-2 bg-gray-800 p-6 rounded-2xl shadow-2xl flex flex-col">
+                     <h2 class="text-xl font-bold text-gray-300 mb-4">Histórico de Temperatura (Último Minuto)</h2>
+                     <div class="relative flex-grow">
+                        <canvas id="temp-chart"></canvas>
+                     </div>
+                </div>
+
+                 <!-- Additional Info Cards -->
+                 <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl">
+                    <h3 class="font-bold text-gray-300 mb-2">Status do Sensor</h3>
+                    <div class="flex items-center text-green-400">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Online e transmitindo</span>
+                    </div>
+                </div>
+                 <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl">
+                    <h3 class="font-bold text-gray-300 mb-2">Umidade Relativa (Simulado)</h3>
+                     <p class="text-4xl font-bold">45<span class="text-2xl text-cyan-400">%</span></p>
+                </div>
+                 <div class="bg-gray-800 p-6 rounded-2xl shadow-2xl">
+                    <h3 class="font-bold text-gray-300 mb-2">Ambiente</h3>
+                     <p class="text-2xl font-bold">Sala de Servidores 01</p>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-600 text-sm mt-12 pb-4">
+            <p>&copy; 2024-2025 | Desenvolvido por <span class="font-bold text-gray-500">Ambi Sense</span>.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Element References ---
+            const loginScreen = document.getElementById('login-screen');
+            const registerScreen = document.getElementById('register-screen');
+            const dashboardScreen = document.getElementById('dashboard-screen');
+
+            const loginForm = document.getElementById('login-form');
+            const loginUsernameInput = document.getElementById('login-username');
+            const loginPasswordInput = document.getElementById('login-password');
+            const loginError = document.getElementById('login-error');
+
+            const goToRegisterLink = document.getElementById('go-to-register');
+            const goToLoginLink = document.getElementById('go-to-login');
+            
+            const regPasswordInput = document.getElementById('reg-password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            const passwordMatchMsg = document.getElementById('password-match-msg');
+            const lengthCheck = document.getElementById('length-check');
+            const specialCharCheck = document.getElementById('special-char-check');
+            const registerButton = document.getElementById('register-button');
+            
+            const logoutButton = document.getElementById('logout-button');
+            const currentTempDisplay = document.getElementById('current-temp');
+            const tempStatusDot = document.getElementById('temp-status-dot');
+            const tempStatusText = document.getElementById('temp-status-text');
+            const lastUpdate = document.getElementById('last-update');
+            const welcomeMessage = document.getElementById('welcome-message');
+
+            let tempUpdateInterval;
+            let tempChart;
+            
+            // --- Default Credentials ---
+            const ADMIN_USER = 'SENAI4.0';
+            const ADMIN_PASS = 'carecacabuloso';
+
+            // --- Navigation Logic ---
+            const showScreen = (screenToShow) => {
+                loginScreen.classList.add('hidden');
+                registerScreen.classList.add('hidden');
+                dashboardScreen.classList.add('hidden');
+                screenToShow.classList.remove('hidden');
+            };
+
+            goToRegisterLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showScreen(registerScreen);
+            });
+
+            goToLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showScreen(loginScreen);
+            });
+
+            logoutButton.addEventListener('click', () => {
+                clearInterval(tempUpdateInterval);
+                if(tempChart) {
+                    tempChart.destroy();
+                }
+                showScreen(loginScreen);
+                loginForm.reset();
+            });
+
+            // --- Login Logic ---
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = loginUsernameInput.value.trim();
+                const password = loginPasswordInput.value.trim();
+
+                if (username === ADMIN_USER && password === ADMIN_PASS) {
+                    loginError.classList.add('hidden');
+                    welcomeMessage.textContent = `Bem-vindo(a), ${username}!`;
+                    showScreen(dashboardScreen);
+                    startDashboard();
+                } else {
+                    loginError.textContent = 'Login ou senha incorretos.';
+                    loginError.classList.remove('hidden');
+                }
+            });
+
+            // --- Registration Logic ---
+            const checkIcon = `<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+            const crossIcon = `<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+
+            const validatePassword = () => {
+                const password = regPasswordInput.value;
+                let isLengthValid = password.length >= 8;
+                let hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+                // Update length check UI
+                if (isLengthValid) {
+                    lengthCheck.classList.remove('text-gray-400');
+                    lengthCheck.classList.add('text-green-400');
+                    lengthCheck.innerHTML = checkIcon + '<span>Pelo menos 8 caracteres</span>';
+                } else {
+                    lengthCheck.classList.add('text-gray-400');
+                    lengthCheck.classList.remove('text-green-400');
+                    lengthCheck.innerHTML = crossIcon + '<span>Pelo menos 8 caracteres</span>';
+                }
+
+                // Update special char check UI
+                if (hasSpecialChar) {
+                    specialCharCheck.classList.remove('text-gray-400');
+                    specialCharCheck.classList.add('text-green-400');
+                    specialCharCheck.innerHTML = checkIcon + '<span>Um caractere especial (!@#$%)</span>';
+                } else {
+                    specialCharCheck.classList.add('text-gray-400');
+                    specialCharCheck.classList.remove('text-green-400');
+                    specialCharCheck.innerHTML = crossIcon + '<span>Um caractere especial (!@#$%)</span>';
+                }
+                
+                return isLengthValid && hasSpecialChar;
+            };
+
+            const checkPasswordMatch = () => {
+                const password = regPasswordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                if (confirmPassword === '' && password === '') {
+                     passwordMatchMsg.textContent = '';
+                     return false;
+                }
+
+                if (password === confirmPassword && password !== '') {
+                    passwordMatchMsg.textContent = 'As senhas conferem!';
+                    passwordMatchMsg.classList.remove('text-red-400');
+                    passwordMatchMsg.classList.add('text-green-400');
+                    return true;
+                } else {
+                    passwordMatchMsg.textContent = 'As senhas não conferem.';
+                    passwordMatchMsg.classList.add('text-red-400');
+                    passwordMatchMsg.classList.remove('text-green-400');
+                    return false;
+                }
+            };
+
+            const validateRegistrationForm = () => {
+                const isPasswordValid = validatePassword();
+                const doPasswordsMatch = checkPasswordMatch();
+                if(isPasswordValid && doPasswordsMatch) {
+                    registerButton.disabled = false;
+                    registerButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                } else {
+                    registerButton.disabled = true;
+                    registerButton.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            };
+            
+            regPasswordInput.addEventListener('input', validateRegistrationForm);
+            confirmPasswordInput.addEventListener('input', validateRegistrationForm);
+
+
+            // --- Dashboard Logic ---
+            const startDashboard = () => {
+                let currentTemp = 23.5;
+
+                // Function to update temperature and UI
+                const updateTemperature = () => {
+                    // Simulate small temperature fluctuation
+                    const fluctuation = (Math.random() - 0.5) * 0.4;
+                    currentTemp += fluctuation;
+                    const displayTemp = currentTemp.toFixed(1);
+
+                    currentTempDisplay.innerHTML = `${displayTemp}<span class="text-5xl text-cyan-400">&deg;C</span>`;
+
+                    // Update status based on temperature
+                    if (currentTemp > 28) {
+                        tempStatusDot.className = 'w-4 h-4 rounded-full bg-red-500 glow-dot mr-3';
+                        tempStatusText.className = 'text-lg font-medium text-red-400';
+                        tempStatusText.textContent = 'Crítico';
+                    } else if (currentTemp > 25) {
+                         tempStatusDot.className = 'w-4 h-4 rounded-full bg-yellow-500 glow-dot mr-3';
+                         tempStatusText.className = 'text-lg font-medium text-yellow-400';
+                         tempStatusText.textContent = 'Alerta';
+                    } else {
+                         tempStatusDot.className = 'w-4 h-4 rounded-full bg-green-500 glow-dot mr-3';
+                         tempStatusText.className = 'text-lg font-medium text-green-400';
+                         tempStatusText.textContent = 'Normal';
+                    }
+                    
+                    const now = new Date();
+                    lastUpdate.textContent = `Última atualização: ${now.toLocaleTimeString('pt-BR')}`;
+                    
+                    // Update Chart
+                    updateChart(now, currentTemp);
+                };
+                
+                // Initialize chart
+                initializeChart();
+                
+                // Start simulation
+                updateTemperature(); // Initial call
+                tempUpdateInterval = setInterval(updateTemperature, 3000); // Update every 3 seconds
+            };
+
+            const initializeChart = () => {
+                const ctx = document.getElementById('temp-chart').getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(0, 224, 224, 0.5)');   
+                gradient.addColorStop(1, 'rgba(0, 224, 224, 0)');
+
+                tempChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Temperatura °C',
+                            data: [],
+                            borderColor: 'rgb(22, 163, 163)', // cyan-500
+                            backgroundColor: gradient,
+                            borderWidth: 3,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: 'rgb(22, 163, 163)',
+                            pointHoverRadius: 7,
+                            pointHoverBackgroundColor: 'rgb(22, 163, 163)',
+                            pointRadius: 5,
+                            tension: 0.4,
+                            fill: true,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#9ca3af', // gray-400
+                                }
+                            },
+                             x: {
+                                grid: {
+                                    display: false,
+                                },
+                                ticks: {
+                                    color: '#9ca3af', // gray-400
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false,
+                            }
+                        }
+                    }
+                });
+            };
+            
+            const updateChart = (time, temp) => {
+                if (!tempChart) return;
+                
+                tempChart.data.labels.push(time.toLocaleTimeString('pt-BR'));
+                tempChart.data.datasets[0].data.push(temp.toFixed(1));
+
+                // Keep only the last 20 data points for a clean graph
+                const maxDataPoints = 20;
+                if (tempChart.data.labels.length > maxDataPoints) {
+                    tempChart.data.labels.shift();
+                    tempChart.data.datasets[0].data.shift();
+                }
+
+                tempChart.update();
+            }
+
+        });
+    </script>
+</body>
+</html>
+
