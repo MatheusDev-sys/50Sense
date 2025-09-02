@@ -65,7 +65,13 @@
                     </div>
                     <div class="mb-6">
                         <label for="login-password" class="block text-sm font-medium text-gray-300 mb-2">Senha</label>
-                        <input type="password" id="login-password" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition" placeholder="••••••••">
+                        <div class="relative">
+                            <input type="password" id="login-password" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg pl-4 pr-10 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition" placeholder="••••••••">
+                            <button type="button" id="toggle-login-password" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white focus:outline-none">
+                                <svg id="eye-icon-login" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                <svg id="eye-slash-icon-login" class="h-5 w-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .527-1.664 1.373-3.16 2.458-4.425L13.875 18.825z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.125 10.125L3.175 3.175m17.65 17.65l-7.07-7.07M21.542 12c-1.274 4.057-5.064 7-9.542 7a9.953 9.953 0 01-2.572-.375"></path></svg>
+                            </button>
+                        </div>
                     </div>
                     <div id="login-error" class="text-red-400 text-sm mb-4 text-center hidden"></div>
                     <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 shadow-lg shadow-cyan-500/20">
@@ -98,8 +104,18 @@
             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl">
                 <form id="register-form">
                     <div class="mb-4">
+                        <label for="reg-username" class="block text-sm font-medium text-gray-300 mb-2">Nome de Usuário</label>
+                        <input type="text" id="reg-username" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition" placeholder="Crie um nome de usuário">
+                    </div>
+                    <div class="mb-4">
                         <label for="reg-password" class="block text-sm font-medium text-gray-300 mb-2">Senha</label>
-                        <input type="password" id="reg-password" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition">
+                        <div class="relative">
+                            <input type="password" id="reg-password" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg pl-4 pr-10 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition">
+                            <button type="button" id="toggle-reg-password" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white focus:outline-none">
+                                <svg id="eye-icon-reg" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                <svg id="eye-slash-icon-reg" class="h-5 w-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .527-1.664 1.373-3.16 2.458-4.425L13.875 18.825z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.125 10.125L3.175 3.175m17.65 17.65l-7.07-7.07M21.542 12c-1.274 4.057-5.064 7-9.542 7a9.953 9.953 0 01-2.572-.375"></path></svg>
+                            </button>
+                        </div>
                     </div>
                     
                     <!-- Password criteria validation -->
@@ -116,7 +132,13 @@
 
                     <div class="mb-4">
                         <label for="confirm-password" class="block text-sm font-medium text-gray-300 mb-2">Confirmar Senha</label>
-                        <input type="password" id="confirm-password" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition">
+                        <div class="relative">
+                            <input type="password" id="confirm-password" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg pl-4 pr-10 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition">
+                            <button type="button" id="toggle-confirm-password" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white focus:outline-none">
+                                <svg id="eye-icon-confirm" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                <svg id="eye-slash-icon-confirm" class="h-5 w-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .527-1.664 1.373-3.16 2.458-4.425L13.875 18.825z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.125 10.125L3.175 3.175m17.65 17.65l-7.07-7.07M21.542 12c-1.274 4.057-5.064 7-9.542 7a9.953 9.953 0 01-2.572-.375"></path></svg>
+                            </button>
+                        </div>
                     </div>
                     
                     <div id="password-match-msg" class="text-sm text-center mb-4 h-5"></div>
@@ -288,6 +310,11 @@
 
             const welcomeMessage = document.getElementById('welcome-message');
 
+            // Password Toggle Elements
+            const toggleLoginPasswordBtn = document.getElementById('toggle-login-password');
+            const toggleRegPasswordBtn = document.getElementById('toggle-reg-password');
+            const toggleConfirmPasswordBtn = document.getElementById('toggle-confirm-password');
+
             // Dashboard Navigation
             const navDashboard = document.getElementById('nav-dashboard');
             const navInventory = document.getElementById('nav-inventory');
@@ -352,6 +379,29 @@
                 showScreen(loginScreen);
                 loginForm.reset();
             });
+            
+            // --- Password Visibility Toggle ---
+            const setupPasswordToggle = (toggleBtn, passwordInput) => {
+                const eyeIcon = toggleBtn.querySelector('svg:not([id*="slash"])');
+                const eyeSlashIcon = toggleBtn.querySelector('svg[id*="slash"]');
+
+                toggleBtn.addEventListener('click', () => {
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        eyeIcon.classList.add('hidden');
+                        eyeSlashIcon.classList.remove('hidden');
+                    } else {
+                        passwordInput.type = 'password';
+                        eyeIcon.classList.remove('hidden');
+                        eyeSlashIcon.classList.add('hidden');
+                    }
+                });
+            };
+
+            setupPasswordToggle(toggleLoginPasswordBtn, loginPasswordInput);
+            setupPasswordToggle(toggleRegPasswordBtn, regPasswordInput);
+            setupPasswordToggle(toggleConfirmPasswordBtn, confirmPasswordInput);
+
 
             // --- Login Logic ---
             loginForm.addEventListener('submit', (e) => {
@@ -650,5 +700,4 @@
     </script>
 </body>
 </html>
-
 
