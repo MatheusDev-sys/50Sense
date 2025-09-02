@@ -58,6 +58,7 @@
             </div>
 
             <div class="bg-gray-800 p-8 rounded-2xl shadow-2xl">
+                <div id="register-success" class="bg-green-500/20 border border-green-500 text-green-300 text-sm rounded-lg p-3 mb-4 text-center hidden"></div>
                 <form id="login-form">
                     <div class="mb-4">
                         <label for="login-username" class="block text-sm font-medium text-gray-300 mb-2">Login</label>
@@ -105,7 +106,7 @@
                 <form id="register-form">
                     <div class="mb-4">
                         <label for="reg-username" class="block text-sm font-medium text-gray-300 mb-2">Nome de Usuário</label>
-                        <input type="text" id="reg-username" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition" placeholder="Crie um nome de usuário">
+                        <input type="text" id="reg-username" class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition" placeholder="Crie um nome de usuário" required>
                     </div>
                     <div class="mb-4">
                         <label for="reg-password" class="block text-sm font-medium text-gray-300 mb-2">Senha</label>
@@ -292,11 +293,15 @@
             const loginPasswordInput = document.getElementById('login-password');
             const loginError = document.getElementById('login-error');
 
+            const registerForm = document.getElementById('register-form');
+            const regUsernameInput = document.getElementById('reg-username');
+            const regPasswordInput = document.getElementById('reg-password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            const registerSuccessMsg = document.getElementById('register-success');
+
             const goToRegisterLink = document.getElementById('go-to-register');
             const goToLoginLink = document.getElementById('go-to-login');
             
-            const regPasswordInput = document.getElementById('reg-password');
-            const confirmPasswordInput = document.getElementById('confirm-password');
             const passwordMatchMsg = document.getElementById('password-match-msg');
             const lengthCheck = document.getElementById('length-check');
             const specialCharCheck = document.getElementById('special-char-check');
@@ -353,6 +358,20 @@
                 { name: 'Fonte de Alimentação 5V', quantity: 7, minLevel: 5, criticalLevel: 2 }
             ];
 
+            // --- Local Storage User Management ---
+            const getUsers = () => {
+                const usersJSON = localStorage.getItem('50sense_users');
+                try {
+                    return usersJSON ? JSON.parse(usersJSON) : [];
+                } catch (e) {
+                    return [];
+                }
+            };
+
+            const saveUsers = (users) => {
+                localStorage.setItem('50sense_users', JSON.stringify(users));
+            };
+
             // --- Navigation Logic ---
             const showScreen = (screenToShow) => {
                 loginScreen.classList.add('hidden');
@@ -363,6 +382,7 @@
 
             goToRegisterLink.addEventListener('click', (e) => {
                 e.preventDefault();
+                registerSuccessMsg.classList.add('hidden');
                 showScreen(registerScreen);
             });
 
@@ -406,12 +426,27 @@
             // --- Login Logic ---
             loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
+                registerSuccessMsg.classList.add('hidden');
                 const username = loginUsernameInput.value.trim();
                 const password = loginPasswordInput.value.trim();
 
+                // 1. Check admin user
                 if (username === ADMIN_USER && password === ADMIN_PASS) {
                     loginError.classList.add('hidden');
                     welcomeMessage.textContent = `Bem-vindo(a), ${username}!`;
+                    showScreen(dashboardScreen);
+                    startDashboard();
+                    renderInventory();
+                    return; 
+                }
+
+                // 2. Check local users
+                const users = getUsers();
+                const foundUser = users.find(user => user.username === username && user.password === password);
+
+                if (foundUser) {
+                    loginError.classList.add('hidden');
+                    welcomeMessage.textContent = `Bem-vindo(a), ${foundUser.username}!`;
                     showScreen(dashboardScreen);
                     startDashboard();
                     renderInventory();
@@ -425,12 +460,8 @@
             navDashboard.addEventListener('click', () => {
                 tempDashboardContent.classList.remove('hidden');
                 inventoryDashboardContent.classList.add('hidden');
-                
-                // Style active button (Dashboard)
                 navDashboard.classList.add('nav-link-active');
                 navDashboard.classList.remove('text-gray-400');
-                
-                // Style inactive button (Inventory)
                 navInventory.classList.remove('nav-link-active');
                 navInventory.classList.add('text-gray-400');
             });
@@ -438,12 +469,8 @@
             navInventory.addEventListener('click', () => {
                 inventoryDashboardContent.classList.remove('hidden');
                 tempDashboardContent.classList.add('hidden');
-                
-                // Style active button (Inventory)
                 navInventory.classList.add('nav-link-active');
                 navInventory.classList.remove('text-gray-400');
-
-                // Style inactive button (Dashboard)
                 navDashboard.classList.remove('nav-link-active');
                 navDashboard.classList.add('text-gray-400');
             });
@@ -456,12 +483,37 @@
                 restartModal.classList.add('hidden');
             });
             confirmRestartButton.addEventListener('click', () => {
-                // Simulate a system restart by reloading the page
                 location.reload();
             });
 
 
             // --- Registration Logic ---
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = regUsernameInput.value.trim();
+                const password = regPasswordInput.value;
+
+                const users = getUsers();
+                const userExists = users.find(user => user.username.toLowerCase() === username.toLowerCase());
+
+                if (userExists) {
+                    passwordMatchMsg.textContent = 'Este nome de usuário já existe.';
+                    passwordMatchMsg.classList.add('text-red-400');
+                    passwordMatchMsg.classList.remove('text-green-400');
+                    return;
+                }
+
+                users.push({ username, password });
+                saveUsers(users);
+
+                registerSuccessMsg.textContent = 'Usuário registrado com sucesso! Faça o login.';
+                registerSuccessMsg.classList.remove('hidden');
+                
+                registerForm.reset();
+                validateRegistrationForm();
+                showScreen(loginScreen);
+            });
+
             const checkIcon = `<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
             const crossIcon = `<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
 
@@ -510,9 +562,10 @@
             };
 
             const validateRegistrationForm = () => {
+                const isUsernameFilled = regUsernameInput.value.trim() !== '';
                 const isPasswordValid = validatePassword();
                 const doPasswordsMatch = checkPasswordMatch();
-                if(isPasswordValid && doPasswordsMatch) {
+                if(isUsernameFilled && isPasswordValid && doPasswordsMatch) {
                     registerButton.disabled = false;
                     registerButton.classList.remove('opacity-50', 'cursor-not-allowed');
                 } else {
@@ -521,13 +574,12 @@
                 }
             };
             
+            regUsernameInput.addEventListener('input', validateRegistrationForm);
             regPasswordInput.addEventListener('input', validateRegistrationForm);
             confirmPasswordInput.addEventListener('input', validateRegistrationForm);
 
 
             // --- Dashboard Logic ---
-
-            // Function to update UI with data from API
             const updateDashboardUI = (temp, time) => {
                 const currentTemp = parseFloat(temp);
                 const displayTemp = currentTemp.toFixed(1);
@@ -652,7 +704,6 @@
                         status = 'OK'; statusColor = 'bg-green-500'; statusText = 'text-green-300';
                     }
                     
-                    // Create Table Row
                     const row = document.createElement('tr');
                     row.className = 'border-b border-gray-700';
                     row.innerHTML = `
@@ -665,7 +716,6 @@
                     `;
                     inventoryTableBody.appendChild(row);
 
-                    // Create Alert if stock is low or critical
                     if (status !== 'OK') {
                         hasAlerts = true;
                         const alertDiv = document.createElement('div');
